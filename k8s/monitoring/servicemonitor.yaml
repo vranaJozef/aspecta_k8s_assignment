@@ -1,0 +1,20 @@
+# Allows Prometheus Operator to discover and scrape metrics
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: backend-monitor
+  namespace: webapp
+  labels:
+    release: prometheus # Match Prometheus Operator selector
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: backend
+  namespaceSelector:
+    matchNames:
+      - webapp
+  endpoints:
+    - port: http
+      path: /metrics
+      interval: 30s
+      scrapeTimeout: 10s

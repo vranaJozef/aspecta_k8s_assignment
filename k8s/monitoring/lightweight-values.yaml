@@ -1,0 +1,52 @@
+prometheus:
+  prometheusSpec:
+    ruleNamespaceSelector: {}
+    ruleSelector:
+      matchLabels:
+        release: prometheus
+
+# Disable unnecessary subcharts/components for local dev
+nodeExporter:
+  enabled: false
+pushgateway:
+  enabled: false
+kubeStateMetrics:
+  enabled: true
+
+# Server Resource Optimization
+server:
+  resources:
+    requests:
+      cpu: 50m
+      memory: 256Mi
+    limits:
+      cpu: 500m
+      memory: 1Gi
+  retention: 2d
+  persistentVolume:
+    enabled: false # Use emptyDir for ephemeral local dev
+
+# Alertmanager Configuration
+alertmanager:
+  enabled: true
+  persistentVolume:
+    enabled: false
+  resources:
+    requests:
+      cpu: 20m
+      memory: 64Mi
+
+# Alerting Rules (loaded into Prometheus config)
+serverFiles:
+  alerting_rules.yml:
+    groups:
+      - name: verification-rules
+        rules:
+          - alert: TestAlert
+            expr: vector(1)
+            for: 10s
+            labels:
+              severity: critical
+            annotations:
+              summary: "Monitoring Verification Alert"
+              description: "This alert works! Prometheus is firing to Alertmanager."

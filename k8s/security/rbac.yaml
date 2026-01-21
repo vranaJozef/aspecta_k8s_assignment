@@ -1,0 +1,86 @@
+---
+# Role for monitoring access (read-only)
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: webapp-monitor
+  namespace: webapp
+rules:
+  - apiGroups: [""]
+    resources: ["pods", "services", "configmaps"]
+    verbs: ["get", "list", "watch"]
+  - apiGroups: ["apps"]
+    resources: ["deployments", "replicasets"]
+    verbs: ["get", "list", "watch"]
+  - apiGroups: [""]
+    resources: ["pods/log"]
+    verbs: ["get", "list"]
+
+---
+# RoleBinding for monitor role
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: webapp-monitor-binding
+  namespace: webapp
+subjects:
+  - kind: ServiceAccount
+    name: webapp-monitor-sa
+    namespace: webapp
+roleRef:
+  kind: Role
+  name: webapp-monitor
+  apiGroup: rbac.authorization.k8s.io
+
+---
+# ServiceAccount for monitoring
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: webapp-monitor-sa
+  namespace: webapp
+
+---
+# Role for CI/CD operations (deploy access)
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: webapp-deployer
+  namespace: webapp
+rules:
+  - apiGroups: [""]
+    resources: ["pods", "services", "configmaps", "secrets"]
+    verbs: ["get", "list", "watch", "create", "update", "patch", "delete"]
+  - apiGroups: ["apps"]
+    resources: ["deployments", "replicasets"]
+    verbs: ["get", "list", "watch", "create", "update", "patch", "delete"]
+  - apiGroups: ["networking.k8s.io"]
+    resources: ["ingresses"]
+    verbs: ["get", "list", "watch", "create", "update", "patch", "delete"]
+  - apiGroups: ["autoscaling"]
+    resources: ["horizontalpodautoscalers"]
+    verbs: ["get", "list", "watch", "create", "update", "patch", "delete"]
+
+---
+# RoleBinding for deployer role
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: webapp-deployer-binding
+  namespace: webapp
+subjects:
+  - kind: ServiceAccount
+    name: webapp-deployer-sa
+    namespace: webapp
+roleRef:
+  kind: Role
+  name: webapp-deployer
+  apiGroup: rbac.authorization.k8s.io
+
+---
+# ServiceAccount for CI/CD
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: webapp-deployer-sa
+  namespace: webapp
