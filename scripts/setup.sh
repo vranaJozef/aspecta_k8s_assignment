@@ -4,6 +4,7 @@ set -o nounset
 set -o pipefail
 
 CLUSTER_NAME="webapp-cluster"
+GIT_SHA=$(git rev-parse --short HEAD)
 
 log() {
     local level=$1
@@ -49,8 +50,8 @@ build_and_load_images() {
     local apps=("backend" "frontend")
     for app in "${apps[@]}"; do
         log "INFO" "Processing $app..."
-        docker build -t "webapp-$app:latest" "$REPO_ROOT/apps/$app/"
-        kind load docker-image "webapp-$app:latest" --name "$CLUSTER_NAME"
+        docker build -t "webapp-$app:$GIT_SHA" "$REPO_ROOT/apps/$app/"
+        kind load docker-image "webapp-$app:$GIT_SHA" --name "$CLUSTER_NAME"
     done
 }
 
@@ -89,8 +90,8 @@ deploy_app() {
         --create-namespace \
         --set backend.image.pullPolicy=IfNotPresent \
         --set frontend.image.pullPolicy=IfNotPresent \
-        --set backend.image.tag=latest \
-        --set frontend.image.tag=latest
+        --set backend.image.tag=$GIT_SHA \
+        --set frontend.image.tag=$GIT_SHA
 }
 
 apply_monitoring_rules() {
