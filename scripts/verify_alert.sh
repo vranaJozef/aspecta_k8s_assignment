@@ -53,9 +53,6 @@ while true; do
 done
 
 echo "Cleaning up..."
-# Force ArgoCD to use 'latest' tag (local) instead of what's in Git to avoid ImagePullBackOff
-kubectl patch application webapp -n argocd --type=merge -p '{"spec":{"source":{"helm":{"parameters":[{"name":"backend.image.tag","value":"latest"}]}}}}'
-
 # Re-enable ArgoCD (will fix the image automatically)
 kubectl patch application webapp -n argocd --type=merge -p '{"spec":{"syncPolicy":{"automated":{"prune":true,"selfHeal":true}}}}'
 
