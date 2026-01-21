@@ -26,7 +26,7 @@ backend:
       memory: 64Mi
   # Environment variables from ConfigMap
   config:
-    APP_ENV: dev
+    APP_ENV: staging
   # Environment variables from Secret
   secret:
     SECRET_KEY: "super-secret-key-that-should-not-be-present-in-repo"
