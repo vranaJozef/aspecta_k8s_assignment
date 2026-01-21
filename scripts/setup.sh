@@ -104,7 +104,7 @@ main() {
     check_dependencies
     create_cluster
     install_ingress
-    build_and_load_images
+    # build_and_load_images
     install_monitoring
     install_argocd
     deploy_app

@@ -7,7 +7,7 @@ namespace: webapp
 backend:
   replicaCount: 2
   image:
-    repository: webapp-backend
+    repository: ghcr.io/vranajozef/aspecta_k8s_assignment/webapp-backend
     tag: sha-fc64317
     pullPolicy: IfNotPresent
   service:
@@ -40,7 +40,7 @@ backend:
 frontend:
   replicaCount: 2
   image:
-    repository: webapp-frontend
+    repository: ghcr.io/vranajozef/aspecta_k8s_assignment/webapp-frontend
     tag: sha-fc64317
     pullPolicy: IfNotPresent
   service:
